@@ -19,3 +19,4 @@ def register():
 @users_blueprint.route('/login')
 def login():
     return render_template('login.html')
+
