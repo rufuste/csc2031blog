@@ -1,5 +1,6 @@
+from datetime import datetime
 from flask import Blueprint, render_template, flash, request, redirect, url_for
-from flask_login import login_user
+from flask_login import login_user, logout_user
 from werkzeug.security import check_password_hash
 from app import db
 from blog.views import blog
@@ -48,5 +49,16 @@ def login():
             return render_template('login.html', form=form)
 
         login_user(user)
+
+        user.last_logged_in = user.current_logged_in
+        user.current_logged_in = datetime.now()
+        db.session.add(user)
+        db.session.commit()
+
         return blog()
     return render_template('login.html', form=form)
+
+users_blueprint.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
