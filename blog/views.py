@@ -1,6 +1,7 @@
 import copy
 
 from flask import Blueprint, render_template
+
 from sqlalchemy import desc
 from app import db
 from blog.forms import PostForm
