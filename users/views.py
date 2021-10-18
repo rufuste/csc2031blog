@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from flask import Blueprint, render_template, flash, request, redirect, url_for
 from flask_login import login_user, logout_user
 from werkzeug.security import check_password_hash
@@ -11,19 +12,22 @@ from users.forms import RegisterForm, LoginForm
 users_blueprint = Blueprint('users', __name__, template_folder='templates')
 
 
-@users_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-
+        # if this returns a user, then the email already exists in database
         user = User.query.filter_by(username=form.username.data).first()
 
+        # if a user is found redirect user back to signup page so user can try again
         if user:
             flash('Username address already exists')
             return render_template('register.html', form=form)
 
-        new_user = User(username=form.username.data, password=form.password.data)
+        # create a new user with the form data
+        new_user = User(username=form.username.data,
+                        password=form.password.data,
+                        pinkey=form.pinkey.data)
 
         db.session.add(new_user)
         db.session.commit()
